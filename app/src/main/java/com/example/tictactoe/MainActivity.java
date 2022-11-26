@@ -2,14 +2,13 @@ package com.example.tictactoe;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.media.Image;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
         TIE,
         NONE
     }
-
+    private Button playAgainBtn;
+    private ImageView messageImageView;
     private Status[] arrayOfState = new Status[9];
     private Status whoPlay = Status.X;
 
@@ -31,9 +31,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         gridLayout.setBackgroundResource(R.drawable.back);
-        ImageView messageImageView = findViewById(R.id.imageView);
+        messageImageView = findViewById(R.id.imageView);
+        playAgainBtn = findViewById(R.id.playAgain);
+        playAgainBtn.setVisibility(View.INVISIBLE);
 
         int childCount = gridLayout.getChildCount();
+        playAgainBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restartGame();
+            }
+        });
 
         for (int i = 0; i < childCount; i++) {
             arrayOfState[i] = Status.NONE;
@@ -51,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
                         Status gameStatus = isGameOver();
                         if(gameStatus == Status.NONE){
                             switchPlayers();
+                        }else{
+                            playAgainBtn.setVisibility(View.VISIBLE);
                         }
-                        changeGameMessage(gameStatus,messageImageView);
+                        changeGameMessage(gameStatus);
                     }
                 }
             });
@@ -89,13 +99,23 @@ public class MainActivity extends AppCompatActivity {
         whoPlay = whoPlay == Status.X ? Status.O : Status.X;
     }
 
-    private void changeGameMessage(Status gameStatus,ImageView messageImageView) {
+    private void changeGameMessage(Status gameStatus) {
         Log.i("restartGameMessage", gameStatus.toString());
         messageImageView.setImageResource(getMessageImage(gameStatus));
     }
 
     private void restartGame() {
-
+        arrayOfState = new Status[9];
+        whoPlay = Status.X;
+        messageImageView.setImageResource(R.drawable.empty);
+        playAgainBtn.setVisibility(View.INVISIBLE);
+        GridLayout gridLayout = findViewById(R.id.gridLayout);
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ImageView imageView = (ImageView) gridLayout.getChildAt(i);
+            arrayOfState[i] = Status.NONE;
+            imageView.setImageResource(R.drawable.empty);
+        }
     }
 
     private Status isGameOver() {
