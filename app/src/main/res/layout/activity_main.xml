@@ -38,7 +38,8 @@
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/empty" />
+            app:srcCompat="@drawable/empty"
+            android:contentDescription="TODO" />
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
