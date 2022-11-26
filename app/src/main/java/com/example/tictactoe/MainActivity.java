@@ -2,6 +2,7 @@ package com.example.tictactoe;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
         NONE
     }
 
-    private Status[] arrayOfState;
+    private Status[] arrayOfState = new Status[9];
+    private Status whoPlay = Status.X;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +39,47 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageView = (ImageView) gridLayout.getChildAt(i);
             imageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Log.i(imageView.getId());
+                    int i = gridLayout.indexOfChild(imageView);
+                    Log.i("Click", "[" + i % 3 + "][" + i / 3 + "]");
+                    imageView.setImageResource(getImage(whoPlay));
+
+                    Status gameStatus = isGameOver();
+
+                    switch (gameStatus) {
+                        case NONE: {
+                            switchPlayers();
+                            break;
+                        }
+                        default: {
+                            restartGameMessage();
+                        }
+                    }
                 }
             });
         }
+    }
+
+    private int getImage(Status status) {
+        switch (status) {
+            case X:
+                return R.drawable.x;
+            case O:
+                return R.drawable.o;
+            default:
+                return R.drawable.empty;
+        }
+    }
+
+    private void switchPlayers() {
+        whoPlay = whoPlay == Status.X ? Status.O : Status.X;
+    }
+
+    private void restartGameMessage() {
+
+    }
+
+    private void restartGame() {
+
     }
 
     private Status isGameOver() {
@@ -52,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (int i = 0; i < arrayOfState.length; i++) {
-            if(arrayOfState[i] == Status.NONE){
+            if (arrayOfState[i] == Status.NONE) {
                 return Status.NONE;
             }
         }
