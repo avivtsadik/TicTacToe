@@ -31,35 +31,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         gridLayout.setBackgroundResource(R.drawable.back);
+        ImageView messageImageView = findViewById(R.id.imageView);
 
         int childCount = gridLayout.getChildCount();
 
         for (int i = 0; i < childCount; i++) {
             arrayOfState[i] = Status.NONE;
+
             ImageView imageView = (ImageView) gridLayout.getChildAt(i);
             imageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     int i = gridLayout.indexOfChild(imageView);
                     Log.i("Click", "[" + i % 3 + "][" + i / 3 + "]");
-                    imageView.setImageResource(getImage(whoPlay));
 
-                    Status gameStatus = isGameOver();
+                    if(arrayOfState[i] == Status.NONE){
+                        imageView.setImageResource(getPlayerImage(whoPlay));
+                        arrayOfState[i] = whoPlay;
 
-                    switch (gameStatus) {
-                        case NONE: {
+                        Status gameStatus = isGameOver();
+                        if(gameStatus == Status.NONE){
                             switchPlayers();
-                            break;
                         }
-                        default: {
-                            restartGameMessage();
-                        }
+                        changeGameMessage(gameStatus,messageImageView);
                     }
                 }
             });
         }
     }
 
-    private int getImage(Status status) {
+    private int getPlayerImage(Status status) {
         switch (status) {
             case X:
                 return R.drawable.x;
@@ -70,12 +70,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private int getMessageImage(Status status) {
+        switch (status) {
+            case X:
+                return R.drawable.xwin;
+            case O:
+                return R.drawable.owin;
+            case TIE:
+                return R.drawable.nowin;
+            case NONE:
+                return whoPlay == Status.X ? R.drawable.xplay :R.drawable.oplay;
+            default:
+                return R.drawable.xwin;
+        }
+    }
+
     private void switchPlayers() {
         whoPlay = whoPlay == Status.X ? Status.O : Status.X;
     }
 
-    private void restartGameMessage() {
-
+    private void changeGameMessage(Status gameStatus,ImageView messageImageView) {
+        Log.i("restartGameMessage", gameStatus.toString());
+        messageImageView.setImageResource(getMessageImage(gameStatus));
     }
 
     private void restartGame() {
