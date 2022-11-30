@@ -49,20 +49,22 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageView = (ImageView) gridLayout.getChildAt(i);
             imageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    int i = gridLayout.indexOfChild(imageView);
-                    Log.i("Click", "[" + i % 3 + "][" + i / 3 + "]");
+                    if(playAgainBtn.getVisibility() == View.INVISIBLE){
+                        int i = gridLayout.indexOfChild(imageView);
+                        Log.i("Click", "[" + i % 3 + "][" + i / 3 + "]");
 
-                    if(arrayOfState[i] == Status.NONE){
-                        imageView.setImageResource(getPlayerImage(whoPlay));
-                        arrayOfState[i] = whoPlay;
+                        if(arrayOfState[i] == Status.NONE){
+                            imageView.setImageResource(getPlayerImage(whoPlay));
+                            arrayOfState[i] = whoPlay;
 
-                        Status gameStatus = isGameOver();
-                        if(gameStatus == Status.NONE){
-                            switchPlayers();
-                        }else{
-                            playAgainBtn.setVisibility(View.VISIBLE);
+                            Status gameStatus = isGameOver();
+                            if(gameStatus == Status.NONE){
+                                switchPlayers();
+                            }else{
+                                playAgainBtn.setVisibility(View.VISIBLE);
+                            }
+                            changeGameMessage(gameStatus);
                         }
-                        changeGameMessage(gameStatus);
                     }
                 }
             });
